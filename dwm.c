@@ -206,6 +206,9 @@ static void setup(void);
 static void showhide(Client *c);
 static void sigchld(int unused);
 static void spawn(const Arg *arg);
+static void swap(Client *a, Client *b);
+static void swapdown(const Arg *arg);
+static void swapup(const Arg *arg);
 static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
 static void tile(Monitor *);
@@ -1643,6 +1646,80 @@ spawn(const Arg *arg)
 		perror(" failed");
 		exit(EXIT_SUCCESS);
 	}
+}
+
+void
+swapdown(const Arg *arg)
+{
+    Client *a, *b, *c;
+
+	if (!selmon->lt[selmon->sellt]->arrange
+	|| (selmon->sel && selmon->sel->isfloating)
+    || (!selmon->sel))
+		return;
+
+    for (c = selmon->sel->next; c && !ISVISIBLE(c); c = c->next);
+    if (c) {
+        a = selmon->sel;
+        b = c;
+    } else {
+        for(c = selmon->clients; c && !ISVISIBLE(c); c = c->next);
+        a = c;
+        b = selmon->sel;
+    }
+
+    if (a == b)
+        return;
+
+    swap(a, b);
+    restack(selmon);
+    arrange(selmon);
+}
+
+void
+swapup(const Arg *arg)
+{
+    Client *a, *b, *c;
+
+	if (!selmon->lt[selmon->sellt]->arrange
+	|| (selmon->sel && selmon->sel->isfloating)
+    || (!selmon->sel))
+		return;
+
+    if (selmon->sel == nexttiled(selmon->clients)) {
+        // Swap first and last visible clients
+        a = selmon->sel;
+        for (c = a; c; c = c->next)
+            if (ISVISIBLE(c))
+                b = c;
+    } else {
+        // Swap previous and current visible clients
+        b = selmon->sel;
+        for (c = selmon->clients; c != selmon->sel; c = c->next)
+            if (ISVISIBLE(c))
+                a = c;
+    }
+
+    if (a == b)
+        return;
+
+    swap(a, b);
+    restack(selmon);
+    arrange(selmon);
+}
+
+void
+swap(Client *a, Client *b)
+{
+    Client **tc, *c;
+    for (tc = &a->mon->clients; *tc && *tc != a; tc = &(*tc)->next);
+    *tc = b;
+    c = b->next;
+    b->next = a->next;
+    a->next = c;
+
+    for (tc = &(*tc)->next; *tc && *tc != b; tc = &(*tc)->next);
+    *tc = a;
 }
 
 void
