@@ -59,7 +59,7 @@
 
 /* enums */
 enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
-enum { SchemeNorm, SchemeSel, SchemeLast }; /* color schemes */
+enum { SchemeNorm, SchemeSel, SchemeSelSingle, SchemeLast }; /* color schemes */
 enum { NetSupported, NetWMName, NetWMState,
        NetWMFullscreen, NetActiveWindow, NetWMWindowType,
        NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
@@ -794,6 +794,8 @@ expose(XEvent *e)
 void
 focus(Client *c)
 {
+    int visiblecount = 0;
+    Client *tmp;
 	if (!c || !ISVISIBLE(c))
 		for (c = selmon->stack; c && !ISVISIBLE(c); c = c->snext);
 	/* was if (selmon->sel) */
@@ -807,7 +809,13 @@ focus(Client *c)
 		detachstack(c);
 		attachstack(c);
 		grabbuttons(c, 1);
-		XSetWindowBorder(dpy, c->win, scheme[SchemeSel].border->pix);
+        for(tmp = selmon->clients; tmp; tmp = tmp->next)
+            if(ISVISIBLE(tmp))
+                visiblecount++;
+        if (visiblecount > 1 && selmon->lt[selmon->sellt]->arrange != monocle)
+            XSetWindowBorder(dpy, c->win, scheme[SchemeSel].border->pix);
+        else
+            XSetWindowBorder(dpy, c->win, scheme[SchemeSelSingle].border->pix);
 		setfocus(c);
 	} else {
 		XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
@@ -1586,6 +1594,9 @@ setup(void)
 	scheme[SchemeSel].border = drw_clr_create(drw, selbordercolor);
 	scheme[SchemeSel].bg = drw_clr_create(drw, selbgcolor);
 	scheme[SchemeSel].fg = drw_clr_create(drw, selfgcolor);
+	scheme[SchemeSelSingle].border = drw_clr_create(drw, selsinglebordercolor);
+	scheme[SchemeSelSingle].bg = drw_clr_create(drw, selbgcolor);
+	scheme[SchemeSelSingle].fg = drw_clr_create(drw, selfgcolor);
 	/* init bars */
 	updatebars();
 	updatestatus();
