@@ -1674,11 +1674,14 @@ void
 tile(Monitor *m)
 {
 	unsigned int i, n, h, mw, my, ty, ns;
+	unsigned int local_gappx = gappx;
 	Client *c;
 
 	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
 	if (n == 0)
 		return;
+	else if (n == 1)
+	    local_gappx = 0;
 
 	if (n > m->nmaster) {
 		mw = m->nmaster ? m->ww * m->mfact : 0;
@@ -1688,15 +1691,15 @@ tile(Monitor *m)
 		ns = 1;
 	}
 
-	for(i = 0, my = ty = gappx, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+	for(i = 0, my = ty = local_gappx, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
 		if(i < m->nmaster) {
-			h = (m->wh - my) / (MIN(n, m->nmaster) - i) - gappx;
-			resize(c, m->wx + gappx, m->wy + my, mw - (2*c->bw) - gappx*(5-ns)/2, h - (2*c->bw), 0);
-			my += HEIGHT(c) + gappx;
+			h = (m->wh - my) / (MIN(n, m->nmaster) - i) - local_gappx;
+			resize(c, m->wx + local_gappx, m->wy + my, mw - (2*c->bw) - local_gappx*(5-ns)/2, h - (2*c->bw), 0);
+			my += HEIGHT(c) + local_gappx;
 		} else {
-			h = (m->wh - ty) / (n - i) - gappx;
-			resize(c, m->wx + mw + gappx/ns, m->wy + ty, m->ww - mw - (2*c->bw) - gappx*(5-ns)/2, h - (2*c->bw), 0);
-			ty += HEIGHT(c) + gappx;
+			h = (m->wh - ty) / (n - i) - local_gappx;
+			resize(c, m->wx + mw + local_gappx/ns, m->wy + ty, m->ww - mw - (2*c->bw) - local_gappx*(5-ns)/2, h - (2*c->bw), 0);
+			ty += HEIGHT(c) + local_gappx;
 		}
 }
 
