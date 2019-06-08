@@ -28,15 +28,17 @@ static const char *colors[][3]      = {
 };
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9",
+                              "q", "w", "e", "r", "t", "y" };
 
+#define TERM_TAGS 1<<9 | 1<<10 | 1<<11 | 1<<12 | 1<<13 | 1<<14
 static const Rule rules[] = {
 	/* xprop(1):
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
+	{ "st-256color",     NULL,       NULL,       TERM_TAGS,            0,           -1 },
 	/* { "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 }, */
 };
 
@@ -87,7 +89,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
-	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
+	{ MODKEY,                       XK_u,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
@@ -100,6 +102,7 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
 	{ MODKEY|ControlMask|ShiftMask, XK_comma,  moveallmon,     {.i = -1 } },
 	{ MODKEY|ControlMask|ShiftMask, XK_period, moveallmon,     {.i = +1 } },
+	{ MODKEY|ControlMask|ShiftMask, XK_x,      quit,           {0} },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
@@ -109,7 +112,12 @@ static Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
-	{ MODKEY|ControlMask|ShiftMask, XK_q,      quit,           {0} },
+	TAGKEYS(                        XK_q,                      9)
+	TAGKEYS(                        XK_w,                      10)
+	TAGKEYS(                        XK_e,                      11)
+	TAGKEYS(                        XK_r,                      12)
+	TAGKEYS(                        XK_t,                      13)
+	TAGKEYS(                        XK_y,                      14)
 };
 
 /* button definitions */
