@@ -1741,7 +1741,7 @@ void
 togglegap(const Arg *arg)
 {
 	selmon->gap = !selmon->gap;
-    tile(selmon);
+    arrangemon(selmon);
 }
 
 void
