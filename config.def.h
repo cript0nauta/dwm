@@ -69,7 +69,7 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
 static const char *termcmd[]  = { "st", NULL };
-static const char *lockcmd[]  = { "i3lock-pixeled", NULL };
+static const char *lockcmd[]  = { "lock", NULL };
 static const char *grabccmd[]  = { "grabc_dwm", NULL };
 
 static Key keys[] = {
