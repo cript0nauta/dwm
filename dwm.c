@@ -1818,7 +1818,8 @@ unmanage(Client *c, int destroyed)
 		XUngrabServer(dpy);
 	}
 	free(c);
-	focus(NULL);
+	Arg arg = { .i = +1 };
+	focusstack(&arg);
 	updateclientlist();
 	arrange(m);
 }
