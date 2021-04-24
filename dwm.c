@@ -1821,9 +1821,16 @@ unmanage(Client *c, int destroyed)
 		XSetErrorHandler(xerror);
 		XUngrabServer(dpy);
 	}
+	if(!strcmp(m->lt[m->sellt]->symbol, "[M]") &&
+				!~(~TAGMASK | m->tagset[m->seltags]) ){
+		/* When all tags are selected and using monocle mode, cycle between all
+		 * windows to close them easily */
+		Arg arg = { .i = +1 };
+		focusstack(&arg);
+	} else {
+		focus(NULL);
+	}
 	free(c);
-	Arg arg = { .i = +1 };
-	focusstack(&arg);
 	updateclientlist();
 	arrange(m);
 }
